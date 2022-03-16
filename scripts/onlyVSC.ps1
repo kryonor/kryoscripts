@@ -1,4 +1,4 @@
-[Boolean]$DEBUG = $True
+$DEBUG = $False
 
 Add-Type @"
 using System;
@@ -9,8 +9,7 @@ public class EXT {
     [DllImport("user32.dll", SetLastError=true)]
     public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out IntPtr lpdwProcessId);
     [DllImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool ShowWindowAsync(IntPtr handle, int state);
+    public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     public static extern int GetWindowText(IntPtr hWnd, String lpString, int nMaxCount);
 }
@@ -73,6 +72,6 @@ while ($(Get-VSCRunningStatus))
     }
 
     $prevWin = $fgWin
-    if ($DEBUG) {Write-Output "prev"}
+    if ($DEBUG) {Write-Output "prev+"}
     Start-Sleep -Milliseconds 1500
 }
