@@ -71,8 +71,8 @@ while ($(Get-VSCRunningStatus))
             <# EnumWindows TODO #>
         }
     }
->
+
     $prevWin = $fgWin
-    Write-Output "prev"
+    if ($DEBUG) {Write-Output "prev"}
     Start-Sleep -Milliseconds 1500
 }
