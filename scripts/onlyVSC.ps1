@@ -10,7 +10,7 @@ public class EXT {
     public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out IntPtr lpdwProcessId);
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool ShowWindow(IntPtr handle, int state);
+    public static extern bool ShowWindowAsync(IntPtr handle, int state);
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     public static extern int GetWindowText(IntPtr hWnd, String lpString, int nMaxCount);
 }
@@ -41,7 +41,6 @@ function Get-VSCRunningStatus {
         return $True
     }
 }
-
 [IntPtr]$prevWin = 0x000
 
 while ($(Get-VSCRunningStatus))
@@ -57,15 +56,23 @@ while ($(Get-VSCRunningStatus))
 
     Add-Log -proc $fgProc -hWnd $fgWin -len $fgTextLen
 
+    if (($fgTextLen -eq 0) -or ($fgProc.Name -eq "SearchApp")) {
+        Start-Sleep -Milliseconds 750
+        continue
+    }
+
     if (-not ($fgWin -eq $prevWin)) {
         if ($fgProc.Name -eq "Code") {
+            <# NIRCMD #>
             Start-Process nircmd "sendkeypress rwin+d"
-            Start-Sleep -Milliseconds 60
-            [EXT]::ShowWindow($fgWin, 3) | Out-Null
+            Start-Sleep -Milliseconds 125
+            [EXT]::ShowWindowAsync($fgWin, 3) | Out-Null
+            
+            <# EnumWindows TODO #>
         }
     }
-    if ($fgTextLen -gt 0) {
-        $prevWin = $fgWin
-    }
-    Start-Sleep -Milliseconds 1250
+>
+    $prevWin = $fgWin
+    Write-Output "prev"
+    Start-Sleep -Milliseconds 1500
 }
