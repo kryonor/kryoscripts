@@ -44,7 +44,7 @@ function Get-VSCRunningStatus {
 
 while ($(Get-VSCRunningStatus))
 {
-    [IntPTr]$fgPID  = 0x000
+    [IntPtr]$fgPID  = 0x000
     [IntPtr]$fgWin  = [EXT]::GetForegroundWindow()
     [IntPtr]$fgTHID = [EXT]::GetWindowThreadProcessId($fgWin, [ref]$fgPID)
 
